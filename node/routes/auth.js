@@ -3,6 +3,8 @@ const router = express.Router();
 const jwt = require('jsonwebtoken');
 const mongoose = require('mongoose')
 const bcrypt = require('bcrypt')
+const localStorage = require('localStorage')
+
 require('../models/user');
 const UserModel = mongoose.model('user');
 const verify = require('../helpers/verify')
@@ -30,6 +32,7 @@ router.post('/register', (req, res) => {
                                 .then(savedUser => {
                                     let payload = { userId: savedUser._id };
                                     let token = jwt.sign(payload, 'SecretKey', { expiresIn: '1h' });
+                                    localStorage.setItem('token', token)
                                     res.status(200).send({ token: token, user: savedUser })
                                 });
                         }
@@ -55,7 +58,9 @@ router.post('/login', (req, res) => {
                 } else {
                     let payload = { userId: user._id };
                     let token = jwt.sign(payload, 'SecretKey', { expiresIn: '1h' })
+                    localStorage.setItem('token', token)
                     res.status(200).send({ token: token, user: user });
+
                 }
             })
         }
@@ -63,5 +68,9 @@ router.post('/login', (req, res) => {
 });
 router.get('/permission', verify, (req, res) => {
     res.status(200).send({ permission: true });
+});
+router.get('/logout', (req, res) => {
+    localStorage.removeItem('token');
+    res.status(200).send(localStorage.getItem('token'))
 });
 module.exports = router

@@ -18,6 +18,8 @@ const getUserId = require('./helpers/getUserId');
 require('./models/user');
 const UserModel = mongoose.model('user');
 
+
+
 app.get('/getuser', verify, (req, res) => {
     const id = getUserId(req, res);
     UserModel.findById(id, (err, user) => {
@@ -30,12 +32,6 @@ app.get('/getuser', verify, (req, res) => {
         }
     })
 });
-
-
-
-
-
-
 app.use('/auth', auth)
 const port = 5000;
 app.listen(port, () => {

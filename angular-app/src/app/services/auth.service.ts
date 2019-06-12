@@ -45,5 +45,8 @@ export class AuthService {
       this._router.navigate(['/']);
     };
     return throwError(err)
+  };
+  logout() {
+    return this._http.get('api/auth/logout').pipe(map(res => res), catchError(this.errorHandler))
   }
 }
